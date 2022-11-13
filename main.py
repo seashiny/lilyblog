@@ -19,8 +19,7 @@ gravatar = Gravatar(app, size=100, rating='g', default='retro', force_default=Fa
 app_ctx = app.app_context()  # 2022-11-12 血泪教训，有用的！！！# 2022-11-10血泪教训，这两行代码没用，一直提示out of app context,后来发现是因为db.create.all()这行代码应该注释掉
 app_ctx.push()
 
-
-##CONNECT TO DB
+# CONNECT TO DB
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "sqlite:///blog.db")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -33,7 +32,7 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-##CONFIGURE TABLE
+# CONFIGURE TABLE
 class User(UserMixin, db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
@@ -65,6 +64,8 @@ class Comment(db.Model):
     parent_post = relationship("BlogPost", back_populates="comments")
     comment_author = relationship("User", back_populates="comments")
     text = db.Column(db.Text, nullable=False)
+
+
 db.create_all()
 
 
@@ -74,6 +75,7 @@ def admin_only(f):
         if current_user.id != 1:
             return abort(403)
         return f(*args, **kwargs)
+
     return decorated_function
 
 
@@ -90,7 +92,7 @@ def register():
 
         if User.query.filter_by(email=form.email.data).first():
             print(User.query.filter_by(email=form.email.data).first())
-            #User already exists
+            # User already exists
             flash("You've already signed up with that email, log in instead!")
             return redirect(url_for('login'))
 
@@ -188,8 +190,6 @@ def add_new_post():
         return redirect(url_for("get_all_posts"))
 
     return render_template("make-post.html", form=form, current_user=current_user)
-
-
 
 
 @app.route("/edit-post/<int:post_id>", methods=["GET", "POST"])
