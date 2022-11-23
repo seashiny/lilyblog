@@ -16,7 +16,7 @@ app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
 ckeditor = CKEditor(app)
 Bootstrap(app)
 gravatar = Gravatar(app, size=100, rating='g', default='retro', force_default=False, force_lower=False, use_ssl=False, base_url=None)
-app_ctx = app.app_context()  # 2022-11-12 血泪教训，有用的！！！# 2022-11-10血泪教训，这两行代码没用，一直提示out of app context,后来发现是因为db.create.all()这行代码应该注释掉
+app_ctx = app.app_context() # attention please!
 app_ctx.push()
 
 # CONNECT TO DB
